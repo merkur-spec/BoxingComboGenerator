@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Boxing Round Timer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <!-- Stance Page -->
+  <section id="stance-page" class="session-settings" role="main" aria-label="Choose your boxing stance">
+    <h1>Choose Your Boxing Stance</h1>
+
+    <!-- Blank placeholder instead of animation box -->
+    <div class="animation-placeholder" aria-hidden="true" style="background: transparent; border: none; box-shadow: none; height: 300px; margin: 2rem auto 3rem;"></div>
+
+    <div class="stance-selection-container">
+      <button id="southpaw-btn" class="stance-button">Southpaw<br><small>(left handed)</small></button>
+      <button id="orthodox-btn" class="stance-button">Orthodox<br><small>(right handed)</small></button>
+    </div>
+
+    <button id="proceed-btn" disabled aria-disabled="true" aria-label="Proceed to settings">Proceed</button>
+  </section>
+
+  <!-- Settings Page -->
+  <section id="settings-page" class="session-settings" style="display:none;">
+    <button id="back-to-stance-btn" class="back-btn">Back</button>
+    <h1>Set Your Session</h1>
+
+    <div class="settings-group">
+      <label for="num-rounds">Number of Rounds</label>
+      <br>
+      <input id="num-rounds" type="number" min="1" max="20" value="3" />
+    </div>
+
+    <div class="settings-group">
+      <label>Round Duration</label>
+      <div class="settings-row">
+        <input id="round-minutes" type="number" min="0" max="59" value="3" /> min
+        <input id="round-seconds" type="number" min="0" max="59" value="0" /> sec
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label>Rest Duration</label>
+      <div class="settings-row">
+        <input id="rest-minutes" type="number" min="0" max="59" value="1" /> min
+        <input id="rest-seconds" type="number" min="0" max="59" value="0" /> sec
+      </div>
+    </div>
+
+    <button id="start-session-btn">Start Session</button>
+  </section>
+
+  <!-- Timer Page -->
+  <section id="timer-page" class="session-settings" style="display:none;">
+    <h1 id="phase-title">READY</h1>
+    <div id="timer-display" style="font-size:4rem; font-weight:900; color:#b22222; margin-bottom:2rem; user-select:none;">00:05</div>
+
+    <div id="combo-display" style="font-size:2.8rem; background:#111; padding:1.8rem 2rem; border-radius:14px; border:2px solid #8b0000; box-shadow: inset 0 0 10px #b22222aa; max-width: 100%; word-break: break-word; margin-bottom: 1.5rem; min-height: 4.5rem; user-select: text; color: #b22222;"></div>
+
+    <div id="timer-controls">
+      <div class="top-buttons" style="display:flex; justify-content:center; gap:1rem; margin-bottom:1.5rem;">
+        <button id="start-timer-btn" style="max-width:180px;">START</button>
+        <button id="stop-timer-btn" style="max-width:180px;">STOP</button>
+        <button id="generate-combo-btn" disabled style="max-width:220px;">Generate Combo</button>
+      </div>
+      <button id="cancel-timer-btn" class="cancel-button" style="max-width:320px; margin:auto; background:#8b0000; color:#fff; border:none; border-radius:14px; font-weight:700; font-size:2.2rem; cursor:pointer; user-select:none;">CANCEL</button>
+    </div>
+  </section>
+
+  <audio id="bell-sound" src="static/sounds/boxingbell.mp3" preload="auto"></audio>
+  <audio id="buzzer-sound" src="static/sounds/boxingbuzzer.mp3" preload="auto"></audio>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
