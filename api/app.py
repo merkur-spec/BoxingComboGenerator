@@ -1,7 +1,8 @@
 from flask import Flask, render_template, jsonify
 import random
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../templates")
 
 # Moves used in combos separated into categories
 head_punches = ["lead jab", "rear cross", "lead hook", "rear hook", "lead uppercut", "rear uppercut", "rear overhand"]
