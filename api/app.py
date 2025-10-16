@@ -153,7 +153,7 @@ def generate_combination(min_length=3):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("../templates/index.html")
 
 @app.route("/combo")
 def combo():
