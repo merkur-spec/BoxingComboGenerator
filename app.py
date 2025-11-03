@@ -95,6 +95,8 @@ def can_add_move(combo, move, body_punch_used, target_length):
             return False
         if (prev == "rear cross" and move == "rear cross"):
             return False
+        if (prev == "rear cross" and move == "rear body cross") or (prev == "rear body cross" and move == "rear cross"):
+            return False
 
         # Only allow defensive moves and offensive moves to be done consecutively from the same side
         if is_defensive(prev) and is_punch(move):
@@ -119,13 +121,6 @@ def can_add_move(combo, move, body_punch_used, target_length):
         if move == "lead body jab":
             if prev not in ["lead jab"]:
                 return False
-        if prev == "rear cross":
-            if move not in ["lead jab", "lead hook", "lead uppercut", "lead body hook", "rear roll"]:
-                return False
-        if prev == "rear body cross":
-            if move not in ["lead jab", "lead hook", "lead uppercut"]:
-                return False
-
     return True
 
 # Had help from ChatGPT writing the generate_combination function
