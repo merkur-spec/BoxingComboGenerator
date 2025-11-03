@@ -117,15 +117,14 @@ def can_add_move(combo, move, body_punch_used, target_length):
             if prev not in ["lead jab", "lead body jab"]:
                 return False
         if move == "lead body jab":
-            if prev not in ["lead jab", "rear cross"]:
+            if prev not in ["lead jab"]:
                 return False
-        if move == "lead body jab":
-            if prev not in ["lead jab"]
+        if prev == "rear cross":
+            if move not in ["lead jab", "lead hook", "lead uppercut", "lead body hook", "rear roll"]:
                 return False
-        if prev == "rear cross" and move not in ["lead jab", "lead hook", "lead uppercut", "lead body hook", "rear roll"]:
-            return False
-        if prev == "rear body cross" and move not in ["lead jab", "lead hook", "lead uppercut"]:
-            return False
+        if prev == "rear body cross":
+            if move not in ["lead jab", "lead hook", "lead uppercut"]:
+                return False
 
     return True
 
