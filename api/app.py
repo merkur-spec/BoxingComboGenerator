@@ -1,8 +1,7 @@
 from flask import Flask, render_template, jsonify
 import random
-import os
 
-app = Flask(__name__, template_folder="../templates", static_folder="../static")
+app = Flask(__name__)
 
 # Moves used in combos separated into categories
 head_punches = ["lead jab", "rear cross", "lead hook", "rear hook", "lead uppercut", "rear uppercut", "rear overhand"]
@@ -92,6 +91,8 @@ def can_add_move(combo, move, body_punch_used, target_length):
             return False
         if (prev == "rear cross" and move == "rear uppercut") or (prev == "rear uppercut" and move == "rear cross"):
             return False
+        if (prev == "rear body cross" and move == "rear uppercut") or (prev == "rear uppercut" and move == "rear body cross"):
+            return False
         if (prev == "rear hook" and move == "rear body cross") or (prev == "rear body cross" and move == "rear hook"):
             return False
         if (prev == "rear cross" and move == "rear cross"):
@@ -117,10 +118,11 @@ def can_add_move(combo, move, body_punch_used, target_length):
         if move == "rear overhand":
             if prev not in ["lead jab", "lead body jab"]:
                 return False
+        if prev == "rear cross" and move not in ["lead hook", "lead body hook", "lead uppercut", "rear roll", "lead jab"]:
+            return False
         if move == "lead body jab":
-            if prev not in ["lead jab", "rear cross"]:
+            if prev not in ["lead jab"]:
                 return False
-
     return True
 
 # Had help from ChatGPT writing the generate_combination function
@@ -159,6 +161,9 @@ def index():
 @app.route("/combo")
 def combo():
     return jsonify(generate_combination())
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
