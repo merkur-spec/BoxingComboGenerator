@@ -161,3 +161,6 @@ def index():
 @app.route("/combo")
 def combo():
     return jsonify(generate_combination())
+
+if __name__ == "__main__":
+    app.run(debug=True)
