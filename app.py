@@ -91,11 +91,11 @@ def can_add_move(combo, move, body_punch_used, target_length):
             return False
         if (prev == "rear cross" and move == "rear uppercut") or (prev == "rear uppercut" and move == "rear cross"):
             return False
+        if (prev == "rear body cross" and move == "rear uppercut") or (prev == "rear uppercut" and move == "rear body cross"):
+            return False
         if (prev == "rear hook" and move == "rear body cross") or (prev == "rear body cross" and move == "rear hook"):
             return False
         if (prev == "rear cross" and move == "rear cross"):
-            return False
-        if (prev == "rear cross" and move == "rear body cross") or (prev == "rear body cross" and move == "rear cross"):
             return False
 
         # Only allow defensive moves and offensive moves to be done consecutively from the same side
@@ -118,6 +118,8 @@ def can_add_move(combo, move, body_punch_used, target_length):
         if move == "rear overhand":
             if prev not in ["lead jab", "lead body jab"]:
                 return False
+        if prev == "rear cross" and move not in ["lead hook", "lead body hook", "lead uppercut", "rear roll", "lead jab"]:
+            return False
         if move == "lead body jab":
             if prev not in ["lead jab"]:
                 return False
@@ -158,6 +160,11 @@ def index():
 
 @app.route("/combo")
 def combo():
+    return jsonify(generate_combination())
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
     return jsonify(generate_combination())
 
 if __name__ == "__main__":
