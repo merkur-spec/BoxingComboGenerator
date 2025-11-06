@@ -1,19 +1,9 @@
 from flask import Flask, render_template, jsonify
 import random
-import os
 
-# Needed for Vercel static and template paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, template_folder="../templates", static_folder="../static")
 
-app = Flask(
-    __name__,
-    template_folder=os.path.join(BASE_DIR, "../templates"),
-    static_folder=os.path.join(BASE_DIR, "../static")
-)
-
-# ----------------------------
-# Combo move definitions
-# ----------------------------
+# Moves used in combos separated into categories
 head_punches = ["lead jab", "rear cross", "lead hook", "rear hook", "lead uppercut", "rear uppercut", "rear overhand"]
 body_punches = ["lead body jab", "rear body cross", "lead body hook", "rear body hook"]
 body_hooks = ["lead body hook", "rear body hook"]
@@ -22,9 +12,7 @@ slips = ["lead slip", "rear slip"]
 rolls = ["lead roll", "rear roll"]
 starter_moves = ["lead jab", "rear cross", "lead hook"]
 
-# ----------------------------
-# Move checking functions
-# ----------------------------
+# functions to identify which moves are being used
 def is_lead(move): return move.startswith("lead")
 def is_rear(move): return move.startswith("rear")
 def is_body(move): return move in body_punches
@@ -37,12 +25,18 @@ def can_add_move(combo, move, body_punch_used, target_length):
             return False
     if is_body(move) and body_punch_used:
         return False
-    if len(combo) >= 3 and all(is_lead(m) for m in combo[-3:]) and is_lead(move):
-        return False
-    if len(combo) >= 2 and all(is_lead(m) for m in combo[-2:]) and is_lead(move) and "uppercut" in move:
-        return False
-    if len(combo) >= 2 and all(is_rear(m) for m in combo[-2:]) and is_rear(move):
-        return False
+    if len(combo) >= 3:
+        last_three = combo[-3:]
+        if all(is_lead(m) for m in last_three) and is_lead(move):
+            return False
+    if len(combo) >= 2:
+        last_two = combo[-2:]
+        if all(is_lead(m) for m in last_two) and is_lead(move) and "uppercut" in move:
+            return False
+    if len(combo) >= 2:
+        last_two = combo[-2:]
+        if all(is_rear(m) for m in last_two) and is_rear(move):
+            return False
     if len(combo) >= 2 and combo[-1] == move and combo[-2] == move:
         return False
     if combo and is_defensive(combo[-1]) and is_defensive(move):
@@ -93,17 +87,16 @@ def can_add_move(combo, move, body_punch_used, target_length):
                 return False
         if prev in ["lead roll", "rear roll"] and move in ["lead uppercut", "rear uppercut"]:
             return False
-        if move == "rear overhand" and prev not in ["lead jab", "lead body jab"]:
-            return False
+        if move == "rear overhand":
+            if prev not in ["lead jab", "lead body jab"]:
+                return False
         if prev == "rear cross" and move not in ["lead hook", "lead body hook", "lead uppercut", "rear roll", "lead jab"]:
             return False
-        if move == "lead body jab" and prev not in ["lead jab"]:
-            return False
+        if move == "lead body jab":
+            if prev not in ["lead jab"]:
+                return False
     return True
 
-# ----------------------------
-# Combination generator
-# ----------------------------
 def generate_combination(min_length=3):
     while True:
         combination = [random.choice(starter_moves)]
@@ -125,9 +118,6 @@ def generate_combination(min_length=3):
         if len(combination) >= min_length:
             return combination
 
-# ----------------------------
-# Routes
-# ----------------------------
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -136,12 +126,9 @@ def index():
 def combo():
     return jsonify(generate_combination())
 
-# ----------------------------
-# Vercel Serverless Entry Point
-# ----------------------------
-def handler(request, response):
-    # Wrap Flask for Vercel
-    from werkzeug.middleware.proxy_fix import ProxyFix
-    app.wsgi_app = ProxyFix(app.wsgi_app)
-    return app
-
+# Vercel serverless handler
+def handler(environ, start_response):
+    from werkzeug.wrappers import Request, Response
+    request = Request(environ)
+    response = Response.from_app(app, environ)
+    return response(environ, start_response)
