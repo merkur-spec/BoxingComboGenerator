@@ -1,14 +1,7 @@
-from flask import Flask, render_template, jsonify, send_from_directory
-import os
+from flask import Flask, render_template, jsonify
 import random
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-app = Flask(
-    __name__,
-    template_folder=os.path.join(BASE_DIR, "../templates"),
-    static_folder=os.path.join(BASE_DIR, "../static")
-)
+app = Flask(__name__)
 
 # Moves used in combos separated into categories
 head_punches = ["lead jab", "rear cross", "lead hook", "rear hook", "lead uppercut", "rear uppercut", "rear overhand"]
@@ -18,6 +11,26 @@ defensive_moves = ["lead slip", "rear slip", "lead roll", "rear roll"]
 slips = ["lead slip", "rear slip"]
 rolls = ["lead roll", "rear roll"]
 starter_moves = ["lead jab", "rear cross", "lead hook"]
+forbidden_pairs = {
+    ("rear hook", "rear cross"),
+    ("rear cross", "rear hook"),
+    ("rear hook", "rear overhand"),
+    ("rear overhand", "rear hook"),
+    ("rear uppercut", "rear overhand"),
+    ("rear overhand", "rear uppercut"),
+    ("rear cross", "rear uppercut"),
+    ("rear uppercut", "rear cross"),
+    ("rear body cross", "rear uppercut"),
+    ("rear uppercut", "rear body cross"),
+    ("rear hook", "rear body cross"),
+    ("rear body cross", "rear hook"),
+    ("rear cross", "rear cross"),
+    ("rear hook", "rear hook"),
+    ("rear overhand", "rear overhand"),
+    ("rear uppercut", "rear uppercut"),
+    ("lead uppercut", "lead uppercut"),
+    ("lead uppercut", "rear uppercut")
+}
 
 # functions to identify which moves are being used
 def is_lead(move): return move.startswith("lead")
@@ -64,6 +77,12 @@ def can_add_move(combo, move, body_punch_used, target_length):
     if combo:
         prev = combo[-1]
 
+        if len(combo) == 1 and combo[0] == "rear cross" and move == "lead jab":
+            return False
+        if len(combo) + 1 == target_length:
+            if move == "lead jab" and prev != "lead jab":
+                return False
+
         #if prev in body_hooks and move in slips:
             #return False
 
@@ -87,24 +106,6 @@ def can_add_move(combo, move, body_punch_used, target_length):
 
         #Rules for consecutive punches
         if move in ["rear hook", "rear overhand", "rear uppercut", "lead uppercut"] and move == prev:
-            return False
-        if (prev == "rear hook" and move == "rear overhand") or (prev == "rear overhand" and move == "rear hook"):
-            return False
-        if (prev == "rear uppercut" and move == "rear overhand") or (prev == "rear overhand" and move == "rear uppercut"):
-            return False
-        if (prev == "rear hook" and move == "rear cross") or (prev == "rear cross" and move == "rear hook"):
-            return False
-        if (prev == "rear body hook" and move == "rear cross") or (prev == "rear cross" and move == "rear body hook"):
-            return False
-        if (prev == "rear cross" and move == "rear uppercut") or (prev == "rear uppercut" and move == "rear cross"):
-            return False
-        if (prev == "rear body cross" and move == "rear uppercut") or (prev == "rear uppercut" and move == "rear body cross"):
-            return False
-        if (prev == "rear hook" and move == "rear body cross") or (prev == "rear body cross" and move == "rear hook"):
-            return False
-        if (prev == "rear cross" and move == "rear cross"):
-            return False
-        if (prev == "rear cross" and move == "rear body cross") or (prev == "rear body cross" and move == "rear cross"):
             return False
 
         # Only allow defensive moves and offensive moves to be done consecutively from the same side
@@ -158,9 +159,14 @@ def generate_combination(min_length=3):
         while len(combination) > 1 and (is_defensive(combination[-1]) or is_body(combination[-1])):
             combination.pop()
 
-        if len(combination) >= min_length:
-            return combination
-
+        # Check for forbidden consecutive pairs
+        for i in range(len(combination) - 1):
+            if (combination[i], combination[i+1]) in forbidden_pairs:
+                break  # combo is invalid, will regenerate
+        else:
+            # If no forbidden pairs exist and combo is long enough, return it
+            if len(combination) >= min_length:
+                return combination
 # Routes
 
 @app.route("/")
