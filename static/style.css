@@ -371,6 +371,17 @@ input[type="number"]:focus {
   transform: scale(1.05);
 }
 
+a {
+  color: var(--red-main); /* main red */
+  text-decoration: underline;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--red-hover); /* brighter red on hover */
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
