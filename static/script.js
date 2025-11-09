@@ -1,3 +1,6 @@
+// I had a lot of help from ChatGPT writing this entire javascript code.
+
+// Created constant variables to get access to HTML elements using document.getElementById
 const stancePage = document.getElementById('stance-page');
 const southpawBtn = document.getElementById('southpaw-btn');
 const orthodoxBtn = document.getElementById('orthodox-btn');
@@ -20,6 +23,9 @@ const comboDisplay = document.getElementById('combo-display');
 const bellSound = document.getElementById('bell-sound');
 const buzzerSound = document.getElementById('buzzer-sound');
 
+const openingPage = document.getElementById('opening-page');
+const enterAppBtn = document.getElementById('enter-app-btn');
+
 
 // State variables
 let stance = null;
@@ -34,7 +40,8 @@ let currentPhase = "ready";
 let selectedStance = null;  // for stance selection before proceed
 
 // Initialization -- This is how the page looks upon initialization.
-stancePage.style.display = "block";
+openingPage.style.display = "block";
+stancePage.style.display = "none";
 settingsPage.style.display = "none";
 timerPage.style.display = "none";
 proceedBtn.disabled = true;
@@ -59,6 +66,11 @@ function selectStance(stanceChoice) {
 
 southpawBtn.addEventListener('click', () => selectStance('southpaw'));
 orthodoxBtn.addEventListener('click', () => selectStance('orthodox'));
+
+enterAppBtn.addEventListener('click', () => {
+  openingPage.style.display = 'none';
+  stancePage.style.display = 'block';
+});
 
 proceedBtn.addEventListener('click', () => {
   if (!selectedStance) return;  // safety check
