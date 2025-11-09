@@ -3,11 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Boxing Combo Generator</title>
+  <title>Boxing Round Timer</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
   <!-- Stance Page -->
+  <section id="opening-page" class="opening-screen" role="main" aria-label="About this app">
+    <h1 class="app-title">Boxing Combo Generator</h1>
+    <div class="about-content">
+      <p>
+        Welcome to <strong>Boxing Combo Generator</strong>
+      </p>
+      <p>
+        Choose your stance, set your number and length of rounds and rest times, a boxing combination will be generated for you to work on during each round. You can generate boxing combinations during rest time until you find one to your liking for the next round.
+      </p>
+      <p>
+        This app is meant for a boxer working out on a heavybag, or hitting mitts.
+        <a href="https://rdxsports.com/?ref=combogenerator&utm_campaign=goaffpro_affiliate_program&utm_medium=affiliate&utm_source=goaffpro" target="_blank" rel="noopener noreferrer">
+          Click here
+        </a>
+          if you would like to browse quality, affordable boxing equipment from RDXSports.
+      </p>
+      <p>
+        Click "Get Started" below to proceed with your workout.
+      </p>
+      </p>
+    </div>
+    <button id="enter-app-btn" class="primary-btn">Get Started</button>
+  </section>
   <section id="stance-page" class="session-settings" role="main" aria-label="Choose your boxing stance">
     <h1>Choose Your Boxing Stance</h1>
 
@@ -75,3 +98,4 @@
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
+
