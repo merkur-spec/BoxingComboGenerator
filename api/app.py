@@ -11,6 +11,7 @@ defensive_moves = ["lead slip", "rear slip", "lead roll", "rear roll"]
 slips = ["lead slip", "rear slip"]
 rolls = ["lead roll", "rear roll"]
 starter_moves = ["lead jab", "rear cross", "lead hook"]
+
 forbidden_pairs = {
     ("rear hook", "rear cross"),
     ("rear cross", "rear hook"),
@@ -29,7 +30,9 @@ forbidden_pairs = {
     ("rear overhand", "rear overhand"),
     ("rear uppercut", "rear uppercut"),
     ("lead uppercut", "lead uppercut"),
-    ("lead uppercut", "rear uppercut")
+    ("lead uppercut", "rear uppercut"),
+    ("rear body hook", "rear cross"),
+    ("rear body cross", "rear cross")
 }
 
 # functions to identify which moves are being used
@@ -40,13 +43,12 @@ def is_defensive(move): return move in defensive_moves
 def is_punch(move): return move in head_punches + body_punches
 
 def can_add_move(combo, move, body_punch_used, target_length):
-
-    #  Overhands can only be thrown as the last punch in a combination
+    # Overhands can only be thrown as the last punch in a combination
     if move == "rear overhand":
         if len(combo) + 1 != target_length:
             return False
 
-    # Only one body punch per combo as too many can leave you open to counters
+    # Only one body punch per combo
     if is_body(move) and body_punch_used:
         return False
 
@@ -56,7 +58,7 @@ def can_add_move(combo, move, body_punch_used, target_length):
         if all(is_lead(m) for m in last_three) and is_lead(move):
             return False
 
-    #3rd lead strike cant be uppercut
+    # 3rd lead strike can't be uppercut
     if len(combo) >= 2:
         last_two = combo[-2:]
         if all(is_lead(m) for m in last_two) and is_lead(move) and "uppercut" in move:
@@ -68,23 +70,26 @@ def can_add_move(combo, move, body_punch_used, target_length):
         if all(is_rear(m) for m in last_two) and is_rear(move):
             return False
 
+    # No 3 identical consecutive strikes
     if len(combo) >= 2 and combo[-1] == move and combo[-2] == move:
         return False
 
+    # No consecutive defensive moves
     if combo and is_defensive(combo[-1]) and is_defensive(move):
         return False
 
     if combo:
         prev = combo[-1]
 
+        # Specific forbidden starter
         if len(combo) == 1 and combo[0] == "rear cross" and move == "lead jab":
             return False
-        if len(combo) + 1 == target_length:
-            if move == "lead jab" and prev != "lead jab":
-                return False
 
-        #if prev in body_hooks and move in slips:
-            #return False
+        # Strict last-move jab rule
+        if len(combo) + 1 == target_length:  # move would be last in combo
+            if move == "lead jab":
+                if len(combo) < 1 or combo[-1] != "lead jab":
+                    return False
 
         if prev in slips and is_punch(move):
             # Only allow same-side body hooks after slips
@@ -104,17 +109,16 @@ def can_add_move(combo, move, body_punch_used, target_length):
             if is_rear(prev) and not is_rear(move):
                 return False
 
-        #Rules for consecutive punches
+        # Rules for consecutive punches
         if move in ["rear hook", "rear overhand", "rear uppercut", "lead uppercut"] and move == prev:
             return False
 
-        # Only allow defensive moves and offensive moves to be done consecutively from the same side
+        # Only allow defensive moves and offensive moves consecutively from same side
         if is_defensive(prev) and is_punch(move):
             if is_lead(prev) and is_rear(move):
                 return False
             if is_rear(prev) and is_lead(move):
                 return False
-
         if is_punch(prev) and is_defensive(move):
             if is_lead(prev) and is_rear(move):
                 return False
@@ -124,24 +128,26 @@ def can_add_move(combo, move, body_punch_used, target_length):
         # Ban uppercuts after rolls
         if prev in ["lead roll", "rear roll"] and move in ["lead uppercut", "rear uppercut"]:
             return False
+
         # Rear overhands can only be thrown after jab or body jab
         if move == "rear overhand":
             if prev not in ["lead jab", "lead body jab"]:
                 return False
+
         if prev == "rear cross" and move not in ["lead hook", "lead body hook", "lead uppercut", "rear roll", "lead jab"]:
             return False
+
         if move == "lead body jab":
             if prev not in ["lead jab"]:
                 return False
+
     return True
 
-# Had help from ChatGPT writing the generate_combination function
 def generate_combination(min_length=3):
     while True:
         combination = [random.choice(starter_moves)]
         body_punch_used = is_body(combination[0])
         target_length = random.randint(min_length, 5)
-
         all_moves = head_punches + body_punches + defensive_moves
 
         while len(combination) < target_length:
@@ -155,20 +161,25 @@ def generate_combination(min_length=3):
             else:
                 break
 
-        # Remove body punches and defensive moves from the end of a combination.
+        # Remove body punches and defensive moves from the end, but keep at least one move
+        # Remove trailing defensive moves or body punches
         while len(combination) > 1 and (is_defensive(combination[-1]) or is_body(combination[-1])):
             combination.pop()
+
+        # If the last move is a lead jab, make sure the previous move is also a lead jab
+        if len(combination) >= 2 and combination[-1] == "lead jab" and combination[-2] != "lead jab":
+            combination[-1] = "lead hook"  # or another valid ending move
+
 
         # Check for forbidden consecutive pairs
         for i in range(len(combination) - 1):
             if (combination[i], combination[i+1]) in forbidden_pairs:
                 break  # combo is invalid, will regenerate
         else:
-            # If no forbidden pairs exist and combo is long enough, return it
             if len(combination) >= min_length:
                 return combination
-# Routes
 
+# Routes
 @app.route("/")
 def index():
     return render_template("index.html")
