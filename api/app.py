@@ -38,6 +38,7 @@ forbidden_pairs = {
     ("rear uppercut", "rear uppercut"),
     ("lead uppercut", "lead uppercut"),
     ("lead uppercut", "rear uppercut"),
+    ("rear uppercut", "lead uppercut"),
     ("rear body hook", "rear cross"),
     ("rear body cross", "rear cross")
 }
