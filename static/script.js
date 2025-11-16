@@ -1,6 +1,4 @@
-// I had a lot of help from ChatGPT writing this entire javascript code.
-
-// Created constant variables to get access to HTML elements using document.getElementById
+// Constant variables to get access to HTML elements using document.getElementById
 const stancePage = document.getElementById('stance-page');
 const southpawBtn = document.getElementById('southpaw-btn');
 const orthodoxBtn = document.getElementById('orthodox-btn');
@@ -97,7 +95,7 @@ backToStanceBtn.addEventListener('click', () => {
   orthodoxBtn.classList.remove('selected');
 });
 
-// Start Session from Settings -- ChatGPT helped a lot with this whole part of the code.
+// Start Session from Settings
 startSessionBtn.addEventListener('click', () => {
   // Parse inputs (no defaulting here!)
   const roundsInput = document.getElementById('num-rounds').value.trim();
@@ -179,7 +177,7 @@ cancelTimerBtn.addEventListener('click', () => {
   generateComboBtn.disabled = true;
 });
 
-// Generate combo button (enabled only during READY or REST phases) -- ChatGPT
+// Generate combo button (enabled only during READY or REST phases)
 generateComboBtn.addEventListener('click', () => {
   if (currentPhase === "rest" || currentPhase === "ready") {
     fetchCombo();
@@ -242,7 +240,7 @@ function transitionPhase() {
 }
 
 
-// Update Timer -- Written with ChatGPT help.
+// Update Timer 
 function updateDisplay() {
   // Format mm:ss
   let mins = Math.floor(timeLeft / 60);
