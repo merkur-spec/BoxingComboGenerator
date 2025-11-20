@@ -33,11 +33,12 @@ This project is a boxing combination generator and round timer, designed for use
   - The `generate_combination` function continuously generates combinations until one meets all rules, ensuring proper starting moves, length, and ending moves.
 
 - **Rules Enforced in Combination Generator:**  
-  - Only one body punch per combination.  
+  - Only one body punch per combination to keep it simple for now.   
   - Maximum consecutive lead or rear strikes.  
   - Avoids three identical consecutive strikes.  
   - Restricts certain moves based on previous moves (e.g., uppercuts after rolls, overhands only at the end).  
   - Prevents inefficient sequences like punching from the opposite side immediately after a defensive move.
+  - Some of these rules may be subject to updates in the future.
 
 ## Usage
 
