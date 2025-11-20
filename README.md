@@ -50,6 +50,3 @@ This project is a boxing combination generator and round timer, designed for use
 ## Deployment
 
 The project is deployed at: [boxingcombogenerator.vercel.app](https://boxingcombogenerator.vercel.app)
-
-
-The project is deployed at: boxingcombogenerator.vercel.app
