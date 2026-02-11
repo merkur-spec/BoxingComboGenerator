@@ -1,5 +1,5 @@
 # BoxingComboGenerator
-This project is a boxing combination generator and round timer, generally designed for users training alone on a boxing heavy bag. It generates unlimited, realistic boxing combinations for the user to practice during the round time. The number of rounds and the duration of each round can be manually set on the settings page.
+This project is a boxing combination generator and round timer, generally designed as a training tool for boxers training alone on a boxing heavy bag. It generates realistic boxing combinations for the user to practice during the round time. The number of rounds and the duration of each round can be manually set on the settings page.
 
 ## Features
 
